@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductsService } from '../../services/products.service';
+import { lastValueFrom } from 'rxjs';
+import { Product } from '../../interfaces/page-info.interface';
 
 @Component({
   selector: 'app-portfolio',
@@ -7,9 +10,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PortfolioComponent implements OnInit {
 
-  constructor() { }
+  constructor(public prodService:ProductsService) { }
+  products:Product[]=[];
+  async ngOnInit(): Promise<void> {
+    const products:any =  this.prodService.loadProducts();
 
-  ngOnInit(): void {
+    await lastValueFrom(products)
+    .then((resp:Product[]|any) => {
+      this.products=resp;
+      // setTimeout(() =>{
+
+      // },2000);
+      this.prodService.loading=false;
+
+      //console.log("productos leidos");
+      //console.log(this.products);
+
+
+    });
+
   }
 
 }
